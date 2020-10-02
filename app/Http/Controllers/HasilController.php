@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use App\Models\Hasil;
+use App\Models\CalonKetua;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 
@@ -21,10 +22,18 @@ class HasilController extends Controller
 
     public function index() {        
         $getData = DB::table('tbhasil')->get();
+        $getHasil = Hasil::get();
 
+        $getCalon = array();
+        foreach ($getHasil as $key => $value) {
+            $value->calonketua = DB::table('tbcalonketua')->where('id', $value->idcalonketua)->first();
+            // $value->calonketua = 'tomat';
+            // array_push($getCalon, $value->calonketua = DB::table('tbcalonketua')->where('id', $value->idcalonketua)->get());
+        }
         $out = [
             "message" => "list_hasil",
-            "results" => $getData
+            "results" => $getHasil,
+            "hasil" => $getCalon
         ];
  
         return response()->json($out, 200);
@@ -38,7 +47,7 @@ class HasilController extends Controller
  
         $out = [
             "message" => "detail_hasil",
-            "results" => $getData
+            "results" => $getData,
         ];
  
         return response()->json($out, 200);

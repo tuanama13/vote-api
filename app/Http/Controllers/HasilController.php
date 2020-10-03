@@ -23,8 +23,9 @@ class HasilController extends Controller
     public function index() {        
         $getData = DB::table('tbhasil')->get();
         $getHasil = Hasil::get();
-
+        $getTotal = DB::table('tbhasil')->sum('jumlah');
         $getCalon = array();
+
         foreach ($getHasil as $key => $value) {
             $value->calonketua = DB::table('tbcalonketua')->where('id', $value->idcalonketua)->first();
             // $value->calonketua = 'tomat';
@@ -33,7 +34,7 @@ class HasilController extends Controller
         $out = [
             "message" => "list_hasil",
             "results" => $getHasil,
-            "hasil" => $getCalon
+            "total" => $getTotal
         ];
  
         return response()->json($out, 200);
@@ -43,7 +44,7 @@ class HasilController extends Controller
         $getData = DB::table('tbhasil')
                      ->select(DB::raw('id, idcalonketua, jumlah'))          
                      ->where('id', $id)
-                     ->get();
+                     ->first();
  
         $out = [
             "message" => "detail_hasil",
